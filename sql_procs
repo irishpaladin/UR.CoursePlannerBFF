@@ -1,0 +1,49 @@
+/*create table Course(
+     course_id int NOT NULL IDENTITY(1,1),
+     subject varchar(100) NOT NULL,
+     course_number int NOT NULL,  
+     primary key(course_id)
+     );
+     
+go
+
+CREATE PROCEDURE CourseDetails
+as
+begin
+	select course_id, subject , course_number
+	from Course;
+end;
+
+
+go
+
+CREATE PROCEDURE CourseById
+    @course_id INT
+AS
+BEGIN
+    SELECT *
+    FROM Course
+    WHERE course_id = @course_id;
+END;
+
+go
+
+
+CREATE PROCEDURE CourseByName
+    @subject VARCHAR(100),
+    @number INT
+AS
+BEGIN
+    SELECT *
+    FROM Course
+    WHERE subject = @subject
+    AND course_number = @number;
+END;
+
+
+
+
+insert into Course( subject, course_number) values('CS' , 372);
+
+select * from Course where course_id = 19 OR subject = 'ENGL';
+*/
