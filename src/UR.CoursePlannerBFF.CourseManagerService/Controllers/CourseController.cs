@@ -1,28 +1,31 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using UR.CoursePlannerBFF.Models;
+using UR.CoursePlannerBFF.CourseManagerService;
+using UR.CoursePlannerBFF.CourseManagerService.Models;
 
 /*  example:
     for whole course list (/course) :           http://localhost7173/Course 
     for course by id (course/id/1) :            http://localhost7173/Course/id/1 
     for course by name (course/name/CS 476) :   http://localhost7173/Course/name/CS%20476 
     (%20 for space)
-*/ 
+*/
 
-namespace UR.CoursePlannerBFF.Controllers
+// TODO: Update to use the singleton DBConnectionProvider to remove SQLClient packges on this proj
+namespace UR.CoursePlannerBFF.CourseManager.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     public class CourseController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private readonly ICourseManagerApiService _courseManagerService;
 
-        public CourseController(IConfiguration configuration)
+        public CourseController(IConfiguration configuration, ICourseManagerApiService courseManagerService)
         {
             _configuration = configuration;
+            _courseManagerService = courseManagerService;
         }
 
         [HttpGet]
@@ -58,41 +61,24 @@ namespace UR.CoursePlannerBFF.Controllers
             return Ok(courses);
         }
 
-        [HttpGet("id/{id}")]
+        [HttpGet("Id({id})")]
         public IActionResult GetCourseById(int id)
         {
-            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            CourseModel result;
+            try
             {
-                connection.Open();
-
-                string sql = "CourseById"; // SQL PROC to get courses by id
-                using (SqlCommand command = new SqlCommand(sql, connection))
-                {
-                    command.CommandType = System.Data.CommandType.StoredProcedure; 
-                    command.Parameters.AddWithValue("@course_id", id);
-
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            Course course = new Course
-                            {
-                                course_id = Convert.ToInt32(reader["course_id"]),
-                                subject = reader["subject"].ToString(),
-                                course_number = Convert.ToInt32(reader["course_number"])
-                            };
-                            return Ok(course);
-                        }
-                        else
-                        {
-                            return NotFound("Course not found");
-                        }
-                    }
-                }
+                result = _courseManagerService.GetCourseById(id);
+                if (result == null)
+                    return NotFound($"Course with course id ({id}) is not found");
             }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok(result);
         }
 
-        [HttpGet("Name/{name}")]
+        [HttpGet("Name({name})")]
         public IActionResult GetCourseByName(string name)
         {
             string[]? parts = name?.Split(' ');

@@ -1,3 +1,5 @@
+using UR.CoursePlannerBFF.Configurations;
+
 namespace UR.CoursePlannerBFF
 {
     public class Program
@@ -12,6 +14,11 @@ namespace UR.CoursePlannerBFF
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // Configure Dependency Injection
+            builder.AddConfigurationOptions();
+            builder.AddServices();
+
 
             var app = builder.Build();
 
