@@ -33,7 +33,7 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
         {
             List<Course> courses = new List<Course>();
 
-            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (SqlConnection connection = new SqlConnection(_configuration.GetSection("SQLDatabase:ConnectionStrings").Value))
             {
                 connection.Open();
 
@@ -87,7 +87,7 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
                 return BadRequest("Invalid course name format");
             }
 
-            using (SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+            using (SqlConnection connection = new SqlConnection(_configuration.GetSection("SQLDatabase:ConnectionStrings").Value))
             {
                 connection.Open();
 
