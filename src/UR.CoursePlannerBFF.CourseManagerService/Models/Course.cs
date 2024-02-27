@@ -1,4 +1,4 @@
-namespace UR.CoursePlannerBFF.Models
+namespace UR.CoursePlannerBFF.CourseManagerService.Models
 {    
     public class Course
     {
