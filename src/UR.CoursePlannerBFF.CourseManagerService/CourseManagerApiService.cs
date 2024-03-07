@@ -8,6 +8,9 @@ namespace UR.CoursePlannerBFF.CourseManagerService
     public interface ICourseManagerApiService
     {
         public CourseModel GetCourseById(int courseId);
+        public IEnumerable<CourseModel> GetAllCourses();
+        public CourseModel GetCourseByName(string subject, int number);
+      
     }
     public class CourseManagerApiService: ICourseManagerApiService
     {
@@ -31,5 +34,36 @@ namespace UR.CoursePlannerBFF.CourseManagerService
             if(result == null ) { throw new Exception($"Course with {courseId} ID does not exist"); }
             return result.FirstOrDefault();
         }
+
+        public IEnumerable<CourseModel> GetAllCourses()
+        {
+            const string sqlCommand = "[dbo].[CourseDetails]";
+           
+            var result = _connection.GetConnection()
+                .Query<CourseModel>( sqlCommand,  commandType: CommandType.StoredProcedure);
+
+            if(result == null ) { throw new Exception($"No Course List found"); }
+            return result;
+        }
+
+        public CourseModel GetCourseByName(string subject, int number)
+        {
+            const string sqlCommand = "[dbo].[CourseByName]";
+            var sqlParameter = new
+            {
+                subject = subject,
+                number = number
+            };
+            var result = _connection.GetConnection()
+                            .Query<CourseModel>(sqlCommand, sqlParameter, commandType: CommandType.StoredProcedure);
+
+            if (result == null || !result.Any())
+            {
+                throw new Exception($"Course with subject '{subject}' and number '{number}' does not exist");
+            }
+    
+            return result.FirstOrDefault();
+        }
+
     }
 }

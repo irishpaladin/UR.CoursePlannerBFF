@@ -28,38 +28,25 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
             _courseManagerService = courseManagerService;
         }
 
-        [HttpGet]
+       [HttpGet("All")]
         public IActionResult GetCourses()
-        {
-            List<Course> courses = new List<Course>();
+        {       
 
-            using (SqlConnection connection = new SqlConnection(_configuration.GetSection("SQLDatabase:ConnectionStrings").Value))
-            {
-                connection.Open();
 
-                string sql = "CourseDetails"; // SQL PROC to get all Courses
-                using (SqlCommand command = new SqlCommand(sql, connection))
+            IEnumerable<CourseModel> result;
+            try
                 {
-                    command.CommandType = System.Data.CommandType.StoredProcedure; 
-
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            Course course = new Course
-                            {
-                                course_id = Convert.ToInt32(reader["course_id"]),
-                                subject = reader["subject"].ToString(),
-                                course_number = Convert.ToInt32(reader["course_number"])
-                            };
-                            courses.Add(course);
-                        }
-                    }
+                    result = _courseManagerService.GetAllCourses();
+                    if (result == null || !result.Any())
+                    return NotFound("No courses found");
                 }
-            }
-
-            return Ok(courses);
+            catch (Exception ex)
+                {
+                   return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+            return Ok(result);
         }
+        
 
         [HttpGet("Id({id})")]
         public IActionResult GetCourseById(int id)
@@ -78,46 +65,35 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
             return Ok(result);
         }
 
+
+
         [HttpGet("Name({name})")]
         public IActionResult GetCourseByName(string name)
-        {
-            string[]? parts = name?.Split(' ');
-            if ( parts.Length != 2 || !int.TryParse(parts[1], out int number))
+        {          
+
+            string[] parts = name?.Split(' ');
+            if (parts.Length != 2 || !int.TryParse(parts[1], out int number))
             {
-                return BadRequest("Invalid course name format");
+                return BadRequest("Invalid course name format, please input with a space, eg- CTCH 311");
             }
 
-            using (SqlConnection connection = new SqlConnection(_configuration.GetSection("SQLDatabase:ConnectionStrings").Value))
+            try
             {
-                connection.Open();
-
-                string sql = "CourseByName"; // SQL Proc to get courses by Name : subject + course_number
-                using (SqlCommand command = new SqlCommand(sql, connection))
+                var course = _courseManagerService.GetCourseByName(parts[0], number);
+                if (course == null)
                 {
-                    command.CommandType = System.Data.CommandType.StoredProcedure; 
-                    command.Parameters.AddWithValue("@subject", parts[0]);
-                    command.Parameters.AddWithValue("@number", number);
-
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            Course course = new Course
-                            {
-                                course_id = Convert.ToInt32(reader["course_id"]),
-                                subject = reader["subject"].ToString(),
-                                course_number = Convert.ToInt32(reader["course_number"])
-                            };
-                            return Ok(course);
-                        }
-                        else
-                        {
-                            return NotFound("Course not found");
-                        }
-                    }
+                    return NotFound("Course not found");
                 }
+                return Ok(course);
             }
-        }
+            catch (Exception ex)
+            {   
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        } 
+
+
+
     }
 
 
