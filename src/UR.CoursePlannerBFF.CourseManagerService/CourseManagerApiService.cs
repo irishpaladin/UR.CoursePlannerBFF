@@ -23,15 +23,10 @@ namespace UR.CoursePlannerBFF.CourseManagerService
 
         public CourseModel GetCourseById(int courseId)
         {
-            const string sqlCommand = "[dbo].[GetCourseDataById]";
-            var sqlParameter = new
-            {
-                id = courseId
-            };
-            var result = _connection.GetConnection()
-                .Query<CourseModel>( sqlCommand, sqlParameter, commandType: CommandType.StoredProcedure);
+            var allCourses = GetAllCourses();
+            var result = allCourses.Where(course => course.coursecatalog_id == courseId);
 
-            if(result == null ) { throw new Exception($"Course with {courseId} ID does not exist"); }
+            if (result == null ) { throw new Exception($"Course with {courseId} ID does not exist"); }
             return result.FirstOrDefault();
         }
 
@@ -48,20 +43,14 @@ namespace UR.CoursePlannerBFF.CourseManagerService
 
         public CourseModel GetCourseByName(string subject, int number)
         {
-            const string sqlCommand = "[dbo].[CourseByName]";
-            var sqlParameter = new
-            {
-                subject = subject,
-                number = number
-            };
-            var result = _connection.GetConnection()
-                            .Query<CourseModel>(sqlCommand, sqlParameter, commandType: CommandType.StoredProcedure);
+            var allCourses = GetAllCourses();
+            var result = allCourses.Where(course => course.coursesubject == subject && course.coursecatalog_number == number);
 
             if (result == null || !result.Any())
             {
                 throw new Exception($"Course with subject '{subject}' and number '{number}' does not exist");
             }
-    
+
             return result.FirstOrDefault();
         }
 

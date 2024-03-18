@@ -31,8 +31,6 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
        [HttpGet("All")]
         public IActionResult GetCourses()
         {       
-
-
             IEnumerable<CourseModel> result;
             try
                 {
@@ -70,7 +68,6 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
         [HttpGet("Name({name})")]
         public IActionResult GetCourseByName(string name)
         {          
-
             string[] parts = name?.Split(' ');
             if (parts.Length != 2 || !int.TryParse(parts[1], out int number))
             {
@@ -91,9 +88,6 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         } 
-
-
-
     }
 
 
