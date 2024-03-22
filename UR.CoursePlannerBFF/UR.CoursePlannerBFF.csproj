@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\src\UR.CoursePlannerBFF.CourseManagerService\UR.CoursePlannerBFF.CourseManagerService.csproj" />
+    <ProjectReference Include="..\src\UserService\UR.CoursePlannerBFF.UserService.csproj" />
   </ItemGroup>
 
 </Project>
