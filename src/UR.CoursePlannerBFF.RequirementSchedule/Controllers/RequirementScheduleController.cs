@@ -34,20 +34,33 @@ namespace UR.CoursePlannerBFF.RequirementSchedule.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<RequirementScheduleModel>> SaveRequirementSchedule(RequirementScheduleModel model)
+        public async Task<ActionResult<RequirementScheduleModel>> SaveRequirementSchedule([FromBody]RequirementScheduleModel model)
         {
             try
             {
                 if (model == null)
                     return BadRequest();
-
-                var createdRequirementSchedule = await requirementSchedulerService.SaveUpdateRequirementSchedule(model);
-                return Created($"{Request.Path.Value}?requirementScheduleId={createdRequirementSchedule}", createdRequirementSchedule);
-
+                return await SaveUpdateRequirementSchedule(model);
             }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        private async Task<ActionResult<RequirementScheduleModel>> SaveUpdateRequirementSchedule(RequirementScheduleModel model)
+        {
+            //Save new Requirement Schedule
+            if (model.requirementsschedules_id == null)
+            {
+                var createdRequirementSchedule = await requirementSchedulerService.SaveRequirementSchedule(model);
+                return Created($"{Request.Path.Value}?requirementScheduleId={createdRequirementSchedule}", createdRequirementSchedule);
+            }
+            // Update existing schedule
+            else
+            {
+                await requirementSchedulerService.UpdateRequirementSchedule(model.requirementsschedules_id, model.course_section_id);
+                return Ok("Update successful");
             }
         }
     }

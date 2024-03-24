@@ -8,7 +8,8 @@ namespace UR.CoursePlannerBFF.RequirementSchedule
     public interface IRequirementSchedulerApiService
     {
         public IEnumerable<RequirementScheduleModel> GetRequirementSchedulesByUserId(int userId);
-        public Task<RequirementScheduleModel> SaveUpdateRequirementSchedule(RequirementScheduleModel model);
+        public Task<RequirementScheduleModel> SaveRequirementSchedule(RequirementScheduleModel model);
+        public Task UpdateRequirementSchedule(int? requirementScheduleId, int? courseSectionId);
 
     }
     public class RequirementSchedulerApiService : IRequirementSchedulerApiService
@@ -31,27 +32,14 @@ namespace UR.CoursePlannerBFF.RequirementSchedule
             return result;
         }
 
-        public Task<RequirementScheduleModel> SaveUpdateRequirementSchedule(RequirementScheduleModel model)
-        {
-            return Task.FromResult(model);
-            if (model.requirementsschedules_id == null)
-            {
-                return SaveRequirementSchedule(model);
-            }
-            else
-            {
-                return UpdateRequirementSchedule(model.requirementsschedules_id, model.vourse_section_id);
-            }
-        }
-
-        private Task<RequirementScheduleModel> SaveRequirementSchedule(RequirementScheduleModel model)
+        public Task<RequirementScheduleModel> SaveRequirementSchedule(RequirementScheduleModel model)
         {
             const string sqlCommand = "[dbo].[SaveRequirementSchedule]";
             var sqlParameter = new
             {
                 requirementsschedules_id = model.requirementsschedules_id,
                 requirement_id = model.requirement_id,
-                vourse_section_id = model.vourse_section_id,
+                course_section_id = model.course_section_id,
                 account_id = model.account_id,
             };
             var result = _connection.GetConnection()
@@ -59,7 +47,7 @@ namespace UR.CoursePlannerBFF.RequirementSchedule
             return Task.FromResult(result);
         }
 
-        private Task<RequirementScheduleModel> UpdateRequirementSchedule(int requirementScheduleId, int courseSectionId)
+        public Task UpdateRequirementSchedule(int? requirementScheduleId, int? courseSectionId)
         {
             const string sqlCommand = "[dbo].[UpdateRequirementSchedule]";
             var sqlParameter = new
@@ -67,11 +55,9 @@ namespace UR.CoursePlannerBFF.RequirementSchedule
                 requirementsschedules_id = requirementScheduleId,
                 vourse_section_id = courseSectionId,
             };
-            var result = _connection.GetConnection()
+            _connection.GetConnection()
                 .QueryAsync<RequirementScheduleModel>(sqlCommand, sqlParameter, commandType: CommandType.StoredProcedure).Result.FirstOrDefault();
-            return Task.FromResult(result);
+            return Task.CompletedTask;
         }
     }
-
-
 }
