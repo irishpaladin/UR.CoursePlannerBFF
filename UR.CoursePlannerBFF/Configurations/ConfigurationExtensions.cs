@@ -1,6 +1,7 @@
 ﻿using UR.CoursePlannerBFF.Common.DBConnection;
 using UR.CoursePlannerBFF.CourseManagerService;
 
+
 namespace UR.CoursePlannerBFF.Configurations
 {
     public static class ConfigurationExtensions
@@ -14,6 +15,9 @@ namespace UR.CoursePlannerBFF.Configurations
         {
             builder.Services.AddSingleton<IDBConnectionProvider, DBConnectionProvider>();
             builder.Services.AddScoped<ICourseManagerApiService, CourseManagerApiService>();
+
+            builder.Services.AddScoped<IUserManagerApiService, UserManagerApiService>();
+
         }
     }
 }
