@@ -20,7 +20,7 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
             _configuration = configuration;
             _userManagerService = userManagerService;
         }
-        [HttpGet("Id({account_id})")]
+        [HttpGet("Requirement/UserID({account_id})")]
         public IActionResult GetRequirementsByUserId(int userId)
         {
             List<Requirement> requirements = new List<Requirement>();
@@ -28,13 +28,11 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
             using (SqlConnection connection = new SqlConnection(_configuration.GetSection("SQLDatabase:ConnectionStrings").Value))
             {
                 connection.Open();
-
                 string sql = "GetRequirementsByUserId"; // SQL PROC to get all Courses
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@id", userId);
-
+                    command.Parameters.AddWithValue("@userId", userId);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -42,9 +40,10 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
                             Requirement requirement = new Requirement
                             {
                                 requirement_id = Convert.ToInt32(reader["requirement_id"]),
-                                requirement_attribute = Convert.ToInt32(reader["requirement_attribute"]),
+                                requirement_occurence = Convert.ToInt32(reader["requirement_occurence"]),
+                                requirement_name = reader["requirement_name"].ToString(),
+                                requirement_status = Convert.ToInt32(reader["requirement_status"]),
                                 audit_id = Convert.ToInt32(reader["audit_id"]),
-
                             };
                             requirements.Add(requirement);
                         }
@@ -54,7 +53,7 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
 
             return Ok(requirements);
         }
-        [HttpGet("Id({account_id})")]
+        [HttpGet("Schedule/UserID({account_id})")]
         public IActionResult GetSchedulesByUserId(int userId)
         {
             List<SectionSchedules> schedules = new List<SectionSchedules>();
@@ -63,11 +62,11 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
             {
                 connection.Open();
 
-                string sql = "GetRequirementsByUserId"; // SQL PROC to get all Courses
+                string sql = "GetSchedulesByUserId"; // SQL PROC to get all Courses
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@id", userId);
+                    command.Parameters.AddWithValue("@userId", userId);
 
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
