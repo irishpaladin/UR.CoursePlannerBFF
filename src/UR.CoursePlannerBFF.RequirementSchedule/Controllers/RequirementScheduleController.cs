@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using UR.CoursePlannerBFF.RequirementSchedule.Models;
-using static UR.CoursePlannerBFF.RequirementSchedule.RequirementScheduleApiService;
+using UR.CoursePlannerBFF.RequirementSchedule;
 
 namespace UR.CoursePlannerBFF.RequirementSchedule.Controllers
 {
@@ -31,6 +31,24 @@ namespace UR.CoursePlannerBFF.RequirementSchedule.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
             return Ok(result);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<RequirementScheduleModel>> SaveRequirementSchedule(RequirementScheduleModel model)
+        {
+            try
+            {
+                if (model == null)
+                    return BadRequest();
+
+                var createdRequirementSchedule = await requirementSchedulerService.SaveUpdateRequirementSchedule(model);
+                return Created($"{Request.Path.Value}?requirementScheduleId={createdRequirementSchedule}", createdRequirementSchedule);
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
     }
 }

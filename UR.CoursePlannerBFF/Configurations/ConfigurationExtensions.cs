@@ -1,6 +1,6 @@
 ﻿using UR.CoursePlannerBFF.Common.DBConnection;
 using UR.CoursePlannerBFF.CourseManagerService;
-using static UR.CoursePlannerBFF.RequirementSchedule.RequirementScheduleApiService;
+using UR.CoursePlannerBFF.RequirementSchedule;
 
 namespace UR.CoursePlannerBFF.Configurations
 {
