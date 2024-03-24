@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UR.CoursePlannerBFF.Common"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UR.CoursePlannerBFF.CourseManagerService", "src\UR.CoursePlannerBFF.CourseManagerService\UR.CoursePlannerBFF.CourseManagerService.csproj", "{021EBEA0-FFCB-4367-91C5-F4966E2BE87F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UR.CoursePlannerBFF.RequirementSchedule", "src\UR.CoursePlannerBFF.RequirementSchedule\UR.CoursePlannerBFF.RequirementSchedule.csproj", "{5412BBE3-5A79-454A-8BA0-D2889EA2C016}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{021EBEA0-FFCB-4367-91C5-F4966E2BE87F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{021EBEA0-FFCB-4367-91C5-F4966E2BE87F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{021EBEA0-FFCB-4367-91C5-F4966E2BE87F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5412BBE3-5A79-454A-8BA0-D2889EA2C016}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5412BBE3-5A79-454A-8BA0-D2889EA2C016}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5412BBE3-5A79-454A-8BA0-D2889EA2C016}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5412BBE3-5A79-454A-8BA0-D2889EA2C016}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
