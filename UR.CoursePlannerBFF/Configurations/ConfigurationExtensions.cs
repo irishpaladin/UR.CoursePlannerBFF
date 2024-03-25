@@ -1,5 +1,6 @@
 ﻿using UR.CoursePlannerBFF.Common.DBConnection;
 using UR.CoursePlannerBFF.CourseManagerService;
+using UR.CoursePlannerBFF.RequirementSchedule;
 
 
 namespace UR.CoursePlannerBFF.Configurations
@@ -15,7 +16,7 @@ namespace UR.CoursePlannerBFF.Configurations
         {
             builder.Services.AddSingleton<IDBConnectionProvider, DBConnectionProvider>();
             builder.Services.AddScoped<ICourseManagerApiService, CourseManagerApiService>();
-
+            builder.Services.AddScoped<IRequirementSchedulerApiService, RequirementSchedulerApiService>();
             builder.Services.AddScoped<IUserManagerApiService, UserManagerApiService>();
 
         }

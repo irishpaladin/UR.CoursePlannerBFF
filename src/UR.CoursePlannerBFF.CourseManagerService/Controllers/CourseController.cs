@@ -28,23 +28,23 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
             _courseManagerService = courseManagerService;
         }
 
-       [HttpGet("All")]
+        [HttpGet("All")]
         public IActionResult GetCourses()
-        {       
+        {
             IEnumerable<CourseModel> result;
             try
-                {
-                    result = _courseManagerService.GetAllCourses();
-                    if (result == null || !result.Any())
+            {
+                result = _courseManagerService.GetAllCourses();
+                if (result == null || !result.Any())
                     return NotFound("No courses found");
-                }
+            }
             catch (Exception ex)
-                {
-                   return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-                }
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
             return Ok(result);
         }
-        
+
 
         [HttpGet("Id({id})")]
         public IActionResult GetCourseById(int id)
@@ -67,7 +67,7 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
 
         [HttpGet("Name({name})")]
         public IActionResult GetCourseByName(string name)
-        {          
+        {
             string[] parts = name?.Split(' ');
             if (parts.Length != 2 || !int.TryParse(parts[1], out int number))
             {
@@ -78,16 +78,14 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
             {
                 var course = _courseManagerService.GetCourseByName(parts[0], number);
                 if (course == null)
-                {
                     return NotFound("Course not found");
-                }
                 return Ok(course);
             }
             catch (Exception ex)
-            {   
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-        } 
+        }
     }
 
 
