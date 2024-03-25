@@ -94,8 +94,11 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
         
         //input with quotation marks . eg- "test@gmail.com"
         [HttpPost("UserIdByEmail")]
-        public IActionResult GetUserIdByEmail([FromBody] string email)
+        public IActionResult GetUserIdByEmail([FromBody] User model)
         {
+            string email = model.account_email;
+            string subclaim = model.subclaim;
+
             int userId;
             try
             {                        
@@ -105,7 +108,13 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
                     return BadRequest("Invalid email format.");
                 }               
 
-                userId = _userManagerService.GetUserIdByEmail(email);
+                 //to check if subclaim is empty/inputted as default string 
+                if (string.IsNullOrEmpty(subclaim) || subclaim == "string")
+                {
+                    subclaim = null;
+                }
+
+                userId = _userManagerService.GetUserIdByEmail(email, subclaim);
                 var responseObject = new
                 {
                     UserId = userId

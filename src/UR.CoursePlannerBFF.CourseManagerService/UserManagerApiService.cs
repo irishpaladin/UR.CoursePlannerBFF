@@ -10,7 +10,7 @@ namespace UR.CoursePlannerBFF.CourseManagerService
     {
         public Requirement GetRequirementsByUserId(int userId);
         public SectionSchedules GetSchedulesByUserId(int userId);                
-        public int GetUserIdByEmail(string email);
+        public int GetUserIdByEmail(string email, string subclaim);
 
     }
     public class UserManagerApiService : IUserManagerApiService
@@ -51,18 +51,19 @@ namespace UR.CoursePlannerBFF.CourseManagerService
         }
 
         
-        public int GetUserIdByEmail(string email)
+        public int GetUserIdByEmail(string email, string subclaim)
         {
-            const string sqlCommand = "[dbo].[InsertEmail]";
+            const string sqlCommand = "[dbo].[InsertEmailAndSubclaim]";
             int userId;
             
             using (var connection = _connection.GetConnection())
             {
                 var parameters = new DynamicParameters();
-                parameters.Add("@Email", email);
+                parameters.Add("@Email", email);                
+                parameters.Add("@Subclaim", subclaim);
                 parameters.Add("@AccountID", dbType: DbType.Int32, direction: ParameterDirection.Output);
 
-                connection.Execute(sqlCommand, parameters, commandType: CommandType.StoredProcedure);
+                 connection.Execute(sqlCommand, parameters, commandType: CommandType.StoredProcedure);
 
                 userId = parameters.Get<int>("@AccountID");
             }
