@@ -13,6 +13,7 @@ namespace UR.CoursePlannerBFF.CourseManagerService
         public Sections GetCourseByRequirementId(int requirementId);
         public IEnumerable<CourseModel> GetAllCourses();
         public CourseModel GetCourseByName(string subject, int number);
+        public IEnumerable<CourseModel> GetAllCoursesByFacultyId(int facultyId);
       
     }
     public class CourseManagerApiService: ICourseManagerApiService
@@ -85,6 +86,13 @@ namespace UR.CoursePlannerBFF.CourseManagerService
 
             if(result == null ) { throw new Exception($"Course with this requirement ID {requirementId} does not exist"); }
             return result.FirstOrDefault();
+        }
+
+        public IEnumerable<CourseModel> GetAllCoursesByFacultyId(int facultyId)
+        {
+            var allCourses = GetAllCourses();
+            var result = allCourses.Where(course => course.faculty_id == facultyId);
+            return result;
         }
     }
 }

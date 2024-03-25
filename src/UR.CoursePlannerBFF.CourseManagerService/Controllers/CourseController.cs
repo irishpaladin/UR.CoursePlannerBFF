@@ -83,6 +83,23 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
+        [HttpGet("Faculty({facultyId})")]
+        public IActionResult GetCourseByFacultyId(int facultyId)
+        {
+            IEnumerable<CourseModel> result;
+            try
+            {
+                result = _courseManagerService.GetAllCoursesByFacultyId(facultyId);
+                if (result == null)
+                    return NotFound($"Course with faculty id ({facultyId}) is not found");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok(result);
+        }
     }
 
 
