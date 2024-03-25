@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using System.ComponentModel.DataAnnotations;
 using UR.CoursePlannerBFF.CourseManagerService;
 using UR.CoursePlannerBFF.CourseManagerService.Models;
 
@@ -90,7 +91,35 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
 
             return Ok(schedules);
         }
+        
+        //input with quotation marks . eg- "test@gmail.com"
+        [HttpPost("UserIdByEmail")]
+        public IActionResult GetUserIdByEmail([FromBody] string email)
+        {
+            int userId;
+            try
+            {                        
+                var emailAttribute = new EmailAddressAttribute();
+                if (!emailAttribute.IsValid(email))
+                {
+                    return BadRequest("Invalid email format.");
+                }               
 
+                userId = _userManagerService.GetUserIdByEmail(email);
+                var responseObject = new
+                {
+                    UserId = userId
+                };      
+                
+                return Ok(responseObject);
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            
+        }
 
 
 
