@@ -10,6 +10,9 @@ namespace UR.CoursePlannerBFF.CourseManagerService
     {
         public Requirement GetRequirementsByUserId(int userId);
         public SectionSchedules GetSchedulesByUserId(int userId);
+        public SaveFilters SaveUserFiltersByUserId(int userId);
+        public Filter GetUserFiltersByUserId(int userId);
+        public User GetUserInfoBySubclaim(string subclaim);
 
     }
     public class UserManagerApiService : IUserManagerApiService
@@ -48,7 +51,49 @@ namespace UR.CoursePlannerBFF.CourseManagerService
             return result.FirstOrDefault();
 
         }
+        public Filter GetUserFiltersByUserId(int userId)
+        {
+            const string sqlCommand = "[dbo].[GetUserFiltersByUserId]";
+            var sqlParameter = new
+            {
+                id = userId
+            };
+            var result = _connection.GetConnection()
+                .Query<Filter>(sqlCommand, sqlParameter, commandType: CommandType.StoredProcedure);
 
+            if (result == null) { throw new Exception($"Course with {userId} ID does not exist"); }
+            return result.FirstOrDefault();
+
+        }
+        public SaveFilters SaveUserFiltersByUserId(int userId)
+        {
+            const string sqlCommand = "[dbo].[SaveUserFiltersByUserId]";
+            var sqlParameter = new
+            {
+                id = userId
+            };
+            var result = _connection.GetConnection()
+                    .Query<SaveFilters>(sqlCommand, sqlParameter, commandType: CommandType.StoredProcedure);
+
+            if (result == null) { throw new Exception($"Course with {userId} ID does not exist"); }
+            return result.FirstOrDefault();
+
+        }
+
+        public User GetUserInfoBySubclaim(string subclaim)
+        {
+            const string sqlCommand = "[dbo].[GetUserFiltersByUserId]";
+            var sqlParameter = new
+            {
+                subcl = subclaim
+            };
+            var result = _connection.GetConnection()
+                .Query<User>(sqlCommand, sqlParameter, commandType: CommandType.StoredProcedure);
+
+            if (result == null) { throw new Exception($"Course with {subclaim} ID does not exist"); }
+            return result.FirstOrDefault();
+
+        }
 
     }
 }
