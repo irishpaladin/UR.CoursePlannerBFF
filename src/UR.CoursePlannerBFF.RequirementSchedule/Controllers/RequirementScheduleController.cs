@@ -51,7 +51,7 @@ namespace UR.CoursePlannerBFF.RequirementSchedule.Controllers
         private async Task<ActionResult<RequirementScheduleModel>> SaveUpdateRequirementSchedule(RequirementScheduleModel model)
         {
             //Save new Requirement Schedule
-            if (model.requirementsschedules_id == null)
+            if (model.requirementschedules_id == null)
             {
                 var createdRequirementSchedule = await requirementSchedulerService.SaveRequirementSchedule(model);
                 return Created($"{Request.Path.Value}?requirementScheduleId={createdRequirementSchedule}", createdRequirementSchedule);
@@ -59,7 +59,7 @@ namespace UR.CoursePlannerBFF.RequirementSchedule.Controllers
             // Update existing schedule
             else
             {
-                await requirementSchedulerService.UpdateRequirementSchedule(model.requirementsschedules_id, model.course_section_id);
+                await requirementSchedulerService.UpdateRequirementSchedule(model.requirementschedules_id, model.coursesection_id);
                 return Ok("Update successful");
             }
         }

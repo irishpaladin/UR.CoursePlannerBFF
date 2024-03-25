@@ -21,13 +21,15 @@ namespace UR.CoursePlannerBFF.RequirementSchedule
             _connection = connection;
         }
 
-        public IEnumerable<RequirementScheduleModel> GetRequirementSchedulesByUserId(int courseId)
+        public IEnumerable<RequirementScheduleModel> GetRequirementSchedulesByUserId(int accountId)
         {
-            throw new NotImplementedException("");
             const string sqlCommand = "[dbo].[GetRequirementScheduleByUserId]";
-
+            var sqlParameter = new
+            {
+                account_id = accountId,
+            };
             var result = _connection.GetConnection()
-                .Query<RequirementScheduleModel>(sqlCommand, commandType: CommandType.StoredProcedure);
+                .Query<RequirementScheduleModel>(sqlCommand, sqlParameter, commandType: CommandType.StoredProcedure);
 
             return result;
         }
@@ -37,9 +39,8 @@ namespace UR.CoursePlannerBFF.RequirementSchedule
             const string sqlCommand = "[dbo].[SaveRequirementSchedule]";
             var sqlParameter = new
             {
-                requirementsschedules_id = model.requirementsschedules_id,
                 requirement_id = model.requirement_id,
-                course_section_id = model.course_section_id,
+                coursesection_id = model.coursesection_id,
                 account_id = model.account_id,
             };
             var result = _connection.GetConnection()
@@ -53,7 +54,7 @@ namespace UR.CoursePlannerBFF.RequirementSchedule
             var sqlParameter = new
             {
                 requirementsschedules_id = requirementScheduleId,
-                vourse_section_id = courseSectionId,
+                coursesection_id = courseSectionId,
             };
             _connection.GetConnection()
                 .QueryAsync<RequirementScheduleModel>(sqlCommand, sqlParameter, commandType: CommandType.StoredProcedure).Result.FirstOrDefault();
