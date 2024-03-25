@@ -18,6 +18,7 @@ namespace UR.CoursePlannerBFF.Configurations
             builder.Services.AddScoped<ICourseManagerApiService, CourseManagerApiService>();
             builder.Services.AddScoped<IRequirementSchedulerApiService, RequirementSchedulerApiService>();
             builder.Services.AddScoped<IUserManagerApiService, UserManagerApiService>();
+            builder.Services.AddScoped<IFacultyManagerApiService, FacultyManagerApiService>();
 
         }
     }
