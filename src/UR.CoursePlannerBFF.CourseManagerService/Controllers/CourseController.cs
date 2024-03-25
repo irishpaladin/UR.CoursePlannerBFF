@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using UR.CoursePlannerBFF.CourseManagerService;
 using UR.CoursePlannerBFF.CourseManagerService.Models;

@@ -20,7 +20,7 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
             _configuration = configuration;
             _userManagerService = userManagerService;
         }
-        [HttpGet("Requirement/UserID({account_id})")]
+        [HttpGet("Requirement/UserID({userId})")]
         public IActionResult GetRequirementsByUserId(int userId)
         {
             List<Requirement> requirements = new List<Requirement>();
@@ -53,7 +53,7 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
 
             return Ok(requirements);
         }
-        [HttpGet("Schedule/UserID({account_id})")]
+        [HttpGet("Schedule/UserID({userId})")]
         public IActionResult GetSchedulesByUserId(int userId)
         {
             List<SectionSchedules> schedules = new List<SectionSchedules>();

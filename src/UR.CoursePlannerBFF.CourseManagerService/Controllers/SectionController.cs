@@ -101,7 +101,7 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
 
             return Ok(courses);
         }
-        [HttpGet("Requirement_id({requirement_id})")]
+        [HttpGet("Requirement_id({requirementId})")]
         public IActionResult GetCourseByRequirementId(int requirementId)
         {
             List<CourseCatalog> coursesCata = new List<CourseCatalog>();
