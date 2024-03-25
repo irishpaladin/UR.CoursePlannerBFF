@@ -7,8 +7,8 @@ namespace UR.CoursePlannerBFF.CourseManagerService
 {
     public interface IUserManagerApiService
     {
-        public Requirement GetRequirementsByUserId(int userId);
-        public SectionSchedules GetSchedulesByUserId(int userId);                
+        public IEnumerable<Requirement> GetRequirementsByUserId(int userId);
+        public IEnumerable<SectionSchedules> GetSchedulesByUserId(int userId);                
         public int GetUserIdByEmail(string email, string subclaim);
 
     }
