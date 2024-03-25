@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System.ComponentModel.DataAnnotations;
 using UR.CoursePlannerBFF.CourseManagerService;
 using UR.CoursePlannerBFF.CourseManagerService.Models;
 
@@ -49,7 +50,44 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
             }
             return Ok(schedules);
         }
+        
+        //input with quotation marks . eg- "test@gmail.com"
+        [HttpPost("UserIdByEmail")]
+        public IActionResult GetUserIdByEmail([FromBody] User model)
+        {
+            string email = model.account_email;
+            string subclaim = model.subclaim;
 
+            int userId;
+            try
+            {                        
+                var emailAttribute = new EmailAddressAttribute();
+                if (!emailAttribute.IsValid(email))
+                {
+                    return BadRequest("Invalid email format.");
+                }               
+
+                 //to check if subclaim is empty/inputted as default string 
+                if (string.IsNullOrEmpty(subclaim) || subclaim == "string")
+                {
+                    subclaim = null;
+                }
+
+                userId = _userManagerService.GetUserIdByEmail(email, subclaim);
+                var responseObject = new
+                {
+                    UserId = userId
+                };      
+                
+                return Ok(responseObject);
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            
+        }
 
 
 

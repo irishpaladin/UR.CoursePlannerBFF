@@ -8,7 +8,8 @@ namespace UR.CoursePlannerBFF.CourseManagerService
     public interface IUserManagerApiService
     {
         public IEnumerable<Requirement> GetRequirementsByUserId(int userId);
-        public IEnumerable<SectionSchedules> GetSchedulesByUserId(int userId);
+        public IEnumerable<SectionSchedules> GetSchedulesByUserId(int userId);                
+        public int GetUserIdByEmail(string email, string subclaim);
 
     }
     public class UserManagerApiService : IUserManagerApiService
@@ -46,6 +47,27 @@ namespace UR.CoursePlannerBFF.CourseManagerService
             if (result == null) { throw new Exception($"Schedules from {userId} userId does not exist"); }
             return result;
 
+        }
+
+        
+        public int GetUserIdByEmail(string email, string subclaim)
+        {
+            const string sqlCommand = "[dbo].[InsertEmailAndSubclaim]";
+            int userId;
+            
+            using (var connection = _connection.GetConnection())
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("@Email", email);                
+                parameters.Add("@Subclaim", subclaim);
+                parameters.Add("@AccountID", dbType: DbType.Int32, direction: ParameterDirection.Output);
+
+                 connection.Execute(sqlCommand, parameters, commandType: CommandType.StoredProcedure);
+
+                userId = parameters.Get<int>("@AccountID");
+            }
+            
+            return userId;
         }
 
 
