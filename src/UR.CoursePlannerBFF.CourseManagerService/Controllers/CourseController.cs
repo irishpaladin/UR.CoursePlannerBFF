@@ -18,12 +18,10 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
     [Route("[controller]")]
     public class CourseController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
         private readonly ICourseManagerApiService _courseManagerService;
 
-        public CourseController(IConfiguration configuration, ICourseManagerApiService courseManagerService)
+        public CourseController(ICourseManagerApiService courseManagerService)
         {
-            _configuration = configuration;
             _courseManagerService = courseManagerService;
         }
 
