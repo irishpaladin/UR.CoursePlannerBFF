@@ -8,6 +8,9 @@ namespace UR.CoursePlannerBFF.CourseManagerService
     public interface ICourseManagerApiService
     {
         public CourseModel GetCourseById(int courseId);
+        public Sections GetSectionByCourseId(int courseId);
+        public Sections GetCourseByTermAndYear(int year, int term);
+        public Sections GetCourseByRequirementId(int requirementId);
         public IEnumerable<CourseModel> GetAllCourses();
         public CourseModel GetCourseByName(string subject, int number);
       
@@ -43,5 +46,45 @@ namespace UR.CoursePlannerBFF.CourseManagerService
             return result.FirstOrDefault();
         }
 
+        public Sections GetSectionByCourseId(int courseId)
+        {
+            const string sqlCommand = "[dbo].[GetCourseDataById]";
+            var sqlParameter = new
+            {
+                id = courseId
+            };
+            var result = _connection.GetConnection()
+                .Query<Sections>( sqlCommand, sqlParameter, commandType: CommandType.StoredProcedure);
+
+            if(result == null ) { throw new Exception($"Course with {courseId} ID does not exist"); }
+            return result.FirstOrDefault();
+        }
+        public Sections GetCourseByTermAndYear(int year, int term)
+        {
+            const string sqlCommand = "[dbo].[GetCourseDataByTermAndYear]";
+            var sqlParameter = new
+            {   
+                ter = term,
+                ye = year
+            };
+            var result = _connection.GetConnection()
+                .Query<Sections>( sqlCommand, sqlParameter, commandType: CommandType.StoredProcedure);
+
+            if(result == null ) { throw new Exception($"Course with this {year} does not exist"); }
+            return result.FirstOrDefault();
+        }
+        public Sections GetCourseByRequirementId(int requirementId)
+        {
+            const string sqlCommand = "[dbo].[GetCourseByRequirementId]";
+            var sqlParameter = new
+            {   
+                rid = requirementId
+            };
+            var result = _connection.GetConnection()
+                .Query<Sections>( sqlCommand, sqlParameter, commandType: CommandType.StoredProcedure);
+
+            if(result == null ) { throw new Exception($"Course with this requirement ID {requirementId} does not exist"); }
+            return result.FirstOrDefault();
+        }
     }
 }
