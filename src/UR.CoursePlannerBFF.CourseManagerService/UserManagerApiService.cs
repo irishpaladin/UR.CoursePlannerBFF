@@ -9,10 +9,11 @@ namespace UR.CoursePlannerBFF.CourseManagerService
     {
         public IEnumerable<Requirement> GetRequirementsByUserId(int userId);
         public IEnumerable<SectionSchedules> GetSchedulesByUserId(int userId);                
-        public int GetUserIdByEmail(string email, string subclaim);
+        public int SaveUserCredentials(string email, string subclaim);
         public int SaveUserFiltersByUserId(int coursesubjectid, int coursecatalogid, int accountId);
         public IEnumerable<Filter> GetUserFiltersByUserId(int userId);
         public User GetUserInfoBySubclaim(string subclaim);
+        public int? RetrieveUserId(string email, string subclaim);
 
     }
     public class UserManagerApiService : IUserManagerApiService
@@ -97,15 +98,10 @@ namespace UR.CoursePlannerBFF.CourseManagerService
             var result = _connection.GetConnection()
                 .Query<User>(sqlCommand, sqlParameter, commandType: CommandType.StoredProcedure);
 
-            if (result == null || !result.Any())
-            {
-                throw new Exception($"No user found with subclaim: {subclaim}");
-            }
-
             return result.FirstOrDefault();
         }
 
-        public int GetUserIdByEmail(string email, string subclaim)
+        public int SaveUserCredentials(string email, string subclaim)
         {
             const string sqlCommand = "[dbo].[InsertEmailAndSubclaim]";
             int userId;
@@ -125,6 +121,13 @@ namespace UR.CoursePlannerBFF.CourseManagerService
             return userId;
         }
 
-
+        public int? RetrieveUserId(string email, string subclaim)
+        {
+            User? user = GetUserInfoBySubclaim(subclaim);
+            if (user != null)
+                return user?.account_id;
+            else
+                return SaveUserCredentials(email, subclaim);
+        }
     }
 }

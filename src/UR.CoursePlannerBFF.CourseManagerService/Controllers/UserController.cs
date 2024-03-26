@@ -53,8 +53,8 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
         }
         
         //input with quotation marks . eg- "test@gmail.com"
-        [HttpPost("UserIdByEmail")]
-        public IActionResult GetUserIdByEmail([FromBody] User model)
+        [HttpPost("Account")]
+        public IActionResult SaveUserCredentials([FromBody] User model)
         {
             string email = model.account_email;
             string subclaim = model.subclaim;
@@ -74,7 +74,7 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
                     subclaim = null;
                 }
 
-                userId = _userManagerService.GetUserIdByEmail(email, subclaim);
+                userId = _userManagerService.SaveUserCredentials(email, subclaim);
                 var responseObject = new
                 {
                     UserId = userId
@@ -129,6 +129,7 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
             }
 
         }
+
         [HttpGet("User({subclaim})")]
         public IActionResult GetUserInfoBySubclaim(string subclaim)
         {
@@ -144,6 +145,47 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
+        }
+
+        [HttpPost]
+        public IActionResult RetrieveUserId([FromBody] User model)
+        {
+            string email = model.account_email;
+            string subclaim = model.subclaim;
+
+            int? userId;
+            try
+            {
+                var emailAttribute = new EmailAddressAttribute();
+                if (!emailAttribute.IsValid(email))
+                {
+                    return BadRequest("Invalid email format.");
+                }
+
+                //to check if subclaim is empty/inputted as default string 
+                if (string.IsNullOrEmpty(subclaim) || subclaim == "string")
+                {
+                    subclaim = null;
+                }
+
+                userId = _userManagerService.RetrieveUserId(email, subclaim);
+                if (userId == null || userId == 0)
+                {
+                    return NotFound("User not found");
+                }
+                var responseObject = new
+                {
+                    UserId = userId
+                };
+
+                return Ok(responseObject);
+            }
+
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
         }
 
 
