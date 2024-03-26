@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using UR.CoursePlannerBFF.CourseManagerService;
 using UR.CoursePlannerBFF.CourseManagerService.Models;
@@ -19,32 +18,30 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
     [Route("[controller]")]
     public class CourseController : ControllerBase
     {
-        private readonly IConfiguration _configuration;
         private readonly ICourseManagerApiService _courseManagerService;
 
-        public CourseController(IConfiguration configuration, ICourseManagerApiService courseManagerService)
+        public CourseController(ICourseManagerApiService courseManagerService)
         {
-            _configuration = configuration;
             _courseManagerService = courseManagerService;
         }
 
-       [HttpGet("All")]
+        [HttpGet("All")]
         public IActionResult GetCourses()
-        {       
+        {
             IEnumerable<CourseModel> result;
             try
-                {
-                    result = _courseManagerService.GetAllCourses();
-                    if (result == null || !result.Any())
+            {
+                result = _courseManagerService.GetAllCourses();
+                if (result == null || !result.Any())
                     return NotFound("No courses found");
-                }
+            }
             catch (Exception ex)
-                {
-                   return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
-                }
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
             return Ok(result);
         }
-        
+
 
         [HttpGet("Id({id})")]
         public IActionResult GetCourseById(int id)
@@ -67,7 +64,7 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
 
         [HttpGet("Name({name})")]
         public IActionResult GetCourseByName(string name)
-        {          
+        {
             string[] parts = name?.Split(' ');
             if (parts.Length != 2 || !int.TryParse(parts[1], out int number))
             {
@@ -78,16 +75,31 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
             {
                 var course = _courseManagerService.GetCourseByName(parts[0], number);
                 if (course == null)
-                {
                     return NotFound("Course not found");
-                }
                 return Ok(course);
             }
             catch (Exception ex)
-            {   
+            {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
-        } 
+        }
+
+        [HttpGet("Faculty({facultyId})")]
+        public IActionResult GetCourseByFacultyId(int facultyId)
+        {
+            IEnumerable<CourseModel> result;
+            try
+            {
+                result = _courseManagerService.GetAllCoursesByFacultyId(facultyId);
+                if (result == null)
+                    return NotFound($"Course with faculty id ({facultyId}) is not found");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok(result);
+        }
     }
 
 

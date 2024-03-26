@@ -13,6 +13,7 @@ namespace UR.CoursePlannerBFF.CourseManagerService
         public Sections GetCourseByRequirementId(int requirementId);
         public IEnumerable<CourseModel> GetAllCourses();
         public CourseModel GetCourseByName(string subject, int number);
+        public IEnumerable<CourseModel> GetAllCoursesByFacultyId(int facultyId);
       
     }
     public class CourseManagerApiService: ICourseManagerApiService
@@ -28,19 +29,14 @@ namespace UR.CoursePlannerBFF.CourseManagerService
         {
             var allCourses = GetAllCourses();
             var result = allCourses.Where(course => course.coursecatalog_id == courseId);
-
-            if (result == null ) { throw new Exception($"Course with {courseId} ID does not exist"); }
             return result.FirstOrDefault();
         }
 
         public IEnumerable<CourseModel> GetAllCourses()
         {
             const string sqlCommand = "[dbo].[CourseDetails]";
-           
             var result = _connection.GetConnection()
                 .Query<CourseModel>( sqlCommand,  commandType: CommandType.StoredProcedure);
-
-            if(result == null ) { throw new Exception($"No Course List found"); }
             return result;
         }
 
@@ -48,12 +44,6 @@ namespace UR.CoursePlannerBFF.CourseManagerService
         {
             var allCourses = GetAllCourses();
             var result = allCourses.Where(course => course.coursesubject == subject && course.coursecatalog_number == number);
-
-            if (result == null || !result.Any())
-            {
-                throw new Exception($"Course with subject '{subject}' and number '{number}' does not exist");
-            }
-
             return result.FirstOrDefault();
         }
 
@@ -96,6 +86,13 @@ namespace UR.CoursePlannerBFF.CourseManagerService
 
             if(result == null ) { throw new Exception($"Course with this requirement ID {requirementId} does not exist"); }
             return result.FirstOrDefault();
+        }
+
+        public IEnumerable<CourseModel> GetAllCoursesByFacultyId(int facultyId)
+        {
+            var allCourses = GetAllCourses();
+            var result = allCourses.Where(course => course.faculty_id == facultyId);
+            return result;
         }
     }
 }
