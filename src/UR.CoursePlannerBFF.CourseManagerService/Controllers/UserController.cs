@@ -92,104 +92,58 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
         [HttpGet("Filtere/UserID({account_id})")]
         public IActionResult GetUserFiltersByUserId(int userId)
         {
-            List<Filter> filters = new List<Filter>();
-            //have do some thing about the above line
-            using (SqlConnection connection = new SqlConnection(_configuration.GetSection("SQLDatabase:ConnectionStrings").Value))
+            IEnumerable<Filter> filters;
+            try
             {
-                connection.Open();
-
-                string sql = "GetUserFiltersByUserId"; // SQL PROC to get all Courses
-                using (SqlCommand command = new SqlCommand(sql, connection))
-                {
-                    command.CommandType = System.Data.CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@userId", userId);
-
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            Filter filter= new Filter()
-                            {
-                                account_id = Convert.ToInt32(reader["account_id"]),
-                                coursecatalogfilter_id = Convert.ToInt32(reader["coursecatalogfilter_id"]),
-                                coursecatalog_id = Convert.ToInt32(reader["coursecatalog_id"]),
-                                coursesubjectfilter_id = Convert.ToInt32(reader["coursesubjectfilter_id"]),
-                                coursesubject_id = Convert.ToInt32(reader["coursesubject_id"]),
-                                coursecatalog_number = Convert.ToInt32(reader["coursecatalog_number"]),
-                                faculty_id = Convert.ToInt32(reader["faculty_id"]),
-                                courseattribute_id = Convert.ToInt32(reader["courseattribute_id"]),
-                                coursecatalog_name = reader["coursecatalog_name"].ToString(),
-                            };
-                            filters.Add(filter);
-                        }
-                    }
-                }
+                filters = _userManagerService.GetUserFiltersByUserId(userId);
+                if (filters == null || !filters.Any())
+                    return NotFound("No filters found");
             }
-
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
             return Ok(filters);
         }
-        [HttpPost("Filtere/UserID({account_id})")]
-        public IActionResult SaveUserFiltersByUserId(int userId, SaveFilters filter)
+
+        [HttpPost("SaveFilterByUserId)")]
+        public IActionResult SaveUserFiltersByUserId([FromBody] SaveFilters model)
         {
 
-            using (SqlConnection connection = new SqlConnection(_configuration.GetSection("SQLDatabase:ConnectionStrings").Value))
+            int coursesubjectid = model.coursesubject_id;
+            int coursecatalogid = model.coursecatalog_id;
+            int accountId = model.account_id;
+            int userId;
+            try
             {
-
-                if (filter == null)
+                userId = _userManagerService.SaveUserFiltersByUserId(coursesubjectid, coursecatalogid, accountId);
+                var responseObject = new
                 {
-                    throw new ArgumentException("No filters provided.", nameof(filter));
-                }
-                connection.Open();
-
-                string sql = "SaveUserFiltersByUserId"; // SQL PROC to get all Courses
-               
-                    using (SqlCommand insertCommand = new SqlCommand(sql, connection))
-                    {
-                        insertCommand.CommandType = System.Data.CommandType.StoredProcedure;
-                        insertCommand.Parameters.AddWithValue("@accountId", filter.account_id);
-                        insertCommand.Parameters.AddWithValue("@courseSubjectId", filter.coursesubject_id);
-                        insertCommand.Parameters.AddWithValue("@courseCatalogId", filter.coursecatalog_id);
-                        insertCommand.ExecuteNonQuery();
-
-                }
-                
+                    UserId = userId
+                };
+                return Ok(responseObject);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
 
-            return Ok(filter);
         }
-
-        [HttpGet("User({account_id})")]
+        [HttpGet("User({subclaim})")]
         public IActionResult GetUserInfoBySubclaim(string subclaim)
         {
-            List<User> users = new List<User>();
-            //have do some thing about the above line
-            using (SqlConnection connection = new SqlConnection(_configuration.GetSection("SQLDatabase:ConnectionStrings").Value))
+            try
             {
-                connection.Open();
+                var user = _userManagerService.GetUserInfoBySubclaim(subclaim);
+                if (user == null)
+                    return NotFound($"No user found with subclaim: {subclaim}");
 
-                string sql = "GetUserInfoBySubclaim"; // SQL PROC to get all Courses
-                using (SqlCommand command = new SqlCommand(sql, connection))
-                {
-                    command.CommandType = System.Data.CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@subclaim", subclaim);
-
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            User user = new User()
-                            {
-                                account_id = Convert.ToInt32(reader["account_id"]),
-                                subclaim = reader["subclaim"].ToString(),
-                                account_email = reader["account_email"].ToString(),
-                            };
-                            users.Add(user);
-                        }
-                    }
-                }
+                return Ok(user);
             }
-
-            return Ok(users);
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
 

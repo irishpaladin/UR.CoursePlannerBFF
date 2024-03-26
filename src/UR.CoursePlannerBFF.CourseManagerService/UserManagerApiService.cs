@@ -10,8 +10,8 @@ namespace UR.CoursePlannerBFF.CourseManagerService
         public IEnumerable<Requirement> GetRequirementsByUserId(int userId);
         public IEnumerable<SectionSchedules> GetSchedulesByUserId(int userId);                
         public int GetUserIdByEmail(string email, string subclaim);
-        public SaveFilters SaveUserFiltersByUserId(int userId);
-        public Filter GetUserFiltersByUserId(int userId);
+        public int SaveUserFiltersByUserId(int coursesubjectid, int coursecatalogid, int accountId);
+        public IEnumerable<Filter> GetUserFiltersByUserId(int userId);
         public User GetUserInfoBySubclaim(string subclaim);
 
     }
@@ -51,50 +51,60 @@ namespace UR.CoursePlannerBFF.CourseManagerService
             return result;
 
         }
-        public Filter GetUserFiltersByUserId(int userId)
+        public IEnumerable<Filter> GetUserFiltersByUserId(int userId)
         {
             const string sqlCommand = "[dbo].[GetUserFiltersByUserId]";
             var sqlParameter = new
             {
-                id = userId
+                userId = userId
             };
             var result = _connection.GetConnection()
                 .Query<Filter>(sqlCommand, sqlParameter, commandType: CommandType.StoredProcedure);
 
-            if (result == null) { throw new Exception($"Course with {userId} ID does not exist"); }
-            return result.FirstOrDefault();
-
-        }
-        public SaveFilters SaveUserFiltersByUserId(int userId)
-        {
-            const string sqlCommand = "[dbo].[SaveUserFiltersByUserId]";
-            var sqlParameter = new
+            if (result == null || !result.Any())
             {
-                id = userId
-            };
-            var result = _connection.GetConnection()
-                    .Query<SaveFilters>(sqlCommand, sqlParameter, commandType: CommandType.StoredProcedure);
+                throw new Exception($"Filters for user with ID {userId} do not exist");
+            }
+            return result;
+        }
 
-            if (result == null) { throw new Exception($"Course with {userId} ID does not exist"); }
-            return result.FirstOrDefault();
+        public int SaveUserFiltersByUserId(int coursesubjectid, int coursecatalogid, int accountId)
+        {
+
+            const string sqlCommand = "[dbo].[SaveUserFiltersByUserId]";
+            int userId;
+            using (var connection = _connection.GetConnection())
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("@coursesubjectid", coursesubjectid);
+                parameters.Add("@coursecatalogid", coursecatalogid);
+                parameters.Add("@accountid", accountId);
+
+                connection.Execute(sqlCommand, parameters, commandType: CommandType.StoredProcedure);
+
+                userId = accountId;
+            }
+            return userId;
 
         }
 
         public User GetUserInfoBySubclaim(string subclaim)
         {
-            const string sqlCommand = "[dbo].[GetUserFiltersByUserId]";
-            var sqlParameter = new
-            {
-                subcl = subclaim
-            };
+            const string sqlCommand = "[dbo].[GetUserInfoBySubclaim]";
+            var sqlParameter = new DynamicParameters();
+            sqlParameter.Add("@subclaim", subclaim); // Add the subclaim parameter
+
             var result = _connection.GetConnection()
                 .Query<User>(sqlCommand, sqlParameter, commandType: CommandType.StoredProcedure);
 
-            if (result == null) { throw new Exception($"Course with {subclaim} ID does not exist"); }
-            return result.FirstOrDefault();
+            if (result == null || !result.Any())
+            {
+                throw new Exception($"No user found with subclaim: {subclaim}");
+            }
 
+            return result.FirstOrDefault();
         }
-        
+
         public int GetUserIdByEmail(string email, string subclaim)
         {
             const string sqlCommand = "[dbo].[InsertEmailAndSubclaim]";
