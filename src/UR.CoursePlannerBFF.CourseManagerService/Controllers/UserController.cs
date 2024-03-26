@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.ComponentModel.DataAnnotations;
 using UR.CoursePlannerBFF.CourseManagerService;
@@ -12,7 +13,7 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserManagerApiService _userManagerService;
-
+        private readonly IConfiguration _configuration;
         public UserController(IConfiguration configuration, IUserManagerApiService userManagerService)
         {
             _userManagerService = userManagerService;
@@ -88,7 +89,62 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
             }
             
         }
+        [HttpGet("Filtere/UserID({account_id})")]
+        public IActionResult GetUserFiltersByUserId(int userId)
+        {
+            IEnumerable<Filter> filters;
+            try
+            {
+                filters = _userManagerService.GetUserFiltersByUserId(userId);
+                if (filters == null || !filters.Any())
+                    return NotFound("No filters found");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok(filters);
+        }
 
+        [HttpPost("SaveFilterByUserId)")]
+        public IActionResult SaveUserFiltersByUserId([FromBody] SaveFilters model)
+        {
+
+            int coursesubjectid = model.coursesubject_id;
+            int coursecatalogid = model.coursecatalog_id;
+            int accountId = model.account_id;
+            int userId;
+            try
+            {
+                userId = _userManagerService.SaveUserFiltersByUserId(coursesubjectid, coursecatalogid, accountId);
+                var responseObject = new
+                {
+                    UserId = userId
+                };
+                return Ok(responseObject);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
+        }
+        [HttpGet("User({subclaim})")]
+        public IActionResult GetUserInfoBySubclaim(string subclaim)
+        {
+            try
+            {
+                var user = _userManagerService.GetUserInfoBySubclaim(subclaim);
+                if (user == null)
+                    return NotFound($"No user found with subclaim: {subclaim}");
+
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
 
 
     }

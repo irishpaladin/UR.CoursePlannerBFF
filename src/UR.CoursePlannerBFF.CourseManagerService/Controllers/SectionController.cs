@@ -40,15 +40,24 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
                         {
                             Sections section = new Sections
                             {
-                                coursesection_id = Convert.ToInt32(reader["coursesection_id"]),
-                                coursesection_year = Convert.ToInt32(reader["coursesection_year"]),
-                                coursesection_term = Convert.ToInt32(reader["coursesection_term"]),
-                                coursesection_number = Convert.ToInt32(reader["coursesection_number"]),
-                                coursesection_CRN = Convert.ToInt32(reader["coursesection_CRN"]),
-                                coursesection_maxseat = Convert.ToInt32(reader["coursesection_maxseat"]),
-                                coursesection_maxwaitlist = Convert.ToInt32(reader["coursesection_maxwaitlist"]),
-                                labsection_id = Convert.ToInt32(reader["labsection_id"]),
-                                coursecatalog_id = Convert.ToInt32(reader["coursecatalog_id"])
+                                coursesection_id = reader.IsDBNull(reader.GetOrdinal("coursesection_id")) ?
+                                                        0 : Convert.ToInt32(reader["coursesection_id"]),
+                                coursesection_year = reader.IsDBNull(reader.GetOrdinal("coursesection_year")) ?
+                                                        0 : Convert.ToInt32(reader["coursesection_year"]),
+                                coursesection_term = reader.IsDBNull(reader.GetOrdinal("coursesection_term")) ?
+                                                        0 : Convert.ToInt32(reader["coursesection_term"]),
+                                coursesection_number = reader.IsDBNull(reader.GetOrdinal("coursesection_number")) ?
+                                                        0 : Convert.ToInt32(reader["coursesection_number"]),
+                                coursesection_CRN = reader.IsDBNull(reader.GetOrdinal("coursesection_CRN")) ?
+                                                        0 : Convert.ToInt32(reader["coursesection_CRN"]),
+                                coursesection_maxseat = reader.IsDBNull(reader.GetOrdinal("coursesection_maxseat")) ?
+                                                        0 : Convert.ToInt32(reader["coursesection_maxseat"]),
+                                coursesection_maxwaitlist = reader.IsDBNull(reader.GetOrdinal("coursesection_maxwaitlist")) ?
+                                                        0 : Convert.ToInt32(reader["coursesection_maxwaitlist"]),
+                                labsection_id = reader.IsDBNull(reader.GetOrdinal("labsection_id")) ?
+                                                        0 : Convert.ToInt32(reader["labsection_id"]),
+                                coursecatalog_id = reader.IsDBNull(reader.GetOrdinal("coursecatalog_id")) ?
+                                                        0 : Convert.ToInt32(reader["coursecatalog_id"])
                             };
                             courses.Add(section);
                         }
@@ -83,15 +92,24 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
                         {
                             Sections section = new Sections
                             {
-                                coursesection_id = Convert.ToInt32(reader["coursesection_id"]),
-                                coursesection_year = Convert.ToInt32(reader["coursesection_year"]),
-                                coursesection_term = Convert.ToInt32(reader["coursesection_term"]),
-                                coursesection_number = Convert.ToInt32(reader["coursesection_number"]),
-                                coursesection_CRN = Convert.ToInt32(reader["coursesection_CRN"]),
-                                coursesection_maxseat = Convert.ToInt32(reader["coursesection_maxseat"]),
-                                coursesection_maxwaitlist = Convert.ToInt32(reader["coursesection_maxwaitlist"]),
-                                labsection_id = Convert.ToInt32(reader["labsection_id"]),
-                                coursecatalog_id = Convert.ToInt32(reader["coursecatalog_id"])
+                                coursesection_id = DBNull.Value.Equals(reader["coursesection_id"]) ?
+                                                        0 : Convert.ToInt32(reader["coursesection_id"]),
+                                coursesection_year = DBNull.Value.Equals(reader["coursesection_year"]) ?
+                                                        0 : Convert.ToInt32(reader["coursesection_year"]),
+                                coursesection_term = DBNull.Value.Equals(reader["coursesection_term"]) ?
+                                                        0 : Convert.ToInt32(reader["coursesection_term"]),
+                                coursesection_number = DBNull.Value.Equals(reader["coursesection_number"]) ?
+                                                        0 : Convert.ToInt32(reader["coursesection_number"]),
+                                coursesection_CRN = DBNull.Value.Equals(reader["coursesection_CRN"]) ?
+                                                        0 : Convert.ToInt32(reader["coursesection_CRN"]),
+                                coursesection_maxseat = DBNull.Value.Equals(reader["coursesection_maxseat"]) ?
+                                                        0 : Convert.ToInt32(reader["coursesection_maxseat"]),
+                                coursesection_maxwaitlist = DBNull.Value.Equals(reader["coursesection_maxwaitlist"]) ?
+                                                        0 : Convert.ToInt32(reader["coursesection_maxwaitlist"]),
+                                labsection_id = DBNull.Value.Equals(reader["labsection_id"]) ?
+                                                        0 : Convert.ToInt32(reader["labsection_id"]),
+                                coursecatalog_id = DBNull.Value.Equals(reader["coursecatalog_id"]) ?
+                                                        0 : Convert.ToInt32(reader["coursecatalog_id"])
                             };
                             courses.Add(section);
                         }
@@ -115,7 +133,7 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
                     command.Parameters.AddWithValue("@requirementId", requirementId);
-                    
+
 
 
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -124,14 +142,17 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
                         {
                             CourseCatalog courseCata = new CourseCatalog
                             {
-                                coursecatalog_id = Convert.ToInt32(reader["coursecatalog_id"]),
+                                coursecatalog_id = reader.IsDBNull(reader.GetOrdinal("coursecatalog_id")) ?
+                                                        0 : Convert.ToInt32(reader["coursecatalog_id"]),
                                 coursecatalog_name = reader["coursecatalog_name"].ToString(),
-                                faculty_id = Convert.ToInt32(reader["faculty_id"]),
-                                coursecatalog_number = Convert.ToInt32(reader["coursecatalog_number"]),
-                                courseattribute_id = Convert.ToInt32(reader["courseattribute_id"]),
-                                coursesubject_id = Convert.ToInt32(reader["coursesubject_id"])
-
-
+                                faculty_id = reader.IsDBNull(reader.GetOrdinal("faculty_id")) ?
+                                                        0 : Convert.ToInt32(reader["faculty_id"]),
+                                coursecatalog_number = reader.IsDBNull(reader.GetOrdinal("coursecatalog_number")) ?
+                                                        0 : Convert.ToInt32(reader["coursecatalog_number"]),
+                                courseattribute_id = reader.IsDBNull(reader.GetOrdinal("courseattribute_id")) ?
+                                                        0 : Convert.ToInt32(reader["courseattribute_id"]),
+                                coursesubject_id = reader.IsDBNull(reader.GetOrdinal("coursesubject_id")) ?
+                                                        0 : Convert.ToInt32(reader["coursesubject_id"])
                             };
                             coursesCata.Add(courseCata);
                         }
