@@ -6,18 +6,22 @@ namespace UR.CoursePlannerBFF.CourseManagerService.CourseDetails
     public interface IGetCourseDataByRequirementId
     {
         public RequirementData GetEligibleCoursesByRequirementId(int requirementId);
+        public List<RequirementData> GetEligibleCoursesByUserId(int requirementId);
     }
 
     public class GetCourseDataByRequirementId : IGetCourseDataByRequirementId
     {
         private readonly ICourseManagerApiService _courseManagerApiService;
+        private readonly IUserManagerApiService _userManagerApiService;
         private readonly IGetEligibleCoursesByRequirementType _eligibleCoursesByRequirementType;
         public GetCourseDataByRequirementId(
             ICourseManagerApiService courseManagerApiService,
-            IGetEligibleCoursesByRequirementType getEligibleCoursesByRequirementType)
+            IGetEligibleCoursesByRequirementType getEligibleCoursesByRequirementType,
+            IUserManagerApiService userManagerApiService)
         {
             _courseManagerApiService = courseManagerApiService;
             _eligibleCoursesByRequirementType = getEligibleCoursesByRequirementType;
+            _userManagerApiService= userManagerApiService;
         }
 
         public RequirementData GetEligibleCoursesByRequirementId(int requirementId)
@@ -49,6 +53,12 @@ namespace UR.CoursePlannerBFF.CourseManagerService.CourseDetails
             }
 
 
+        }
+
+        public List<RequirementData> GetEligibleCoursesByUserId(int userId)
+        {
+            return _userManagerApiService.GetRequirementsByUserId(userId)
+                .Select(r => GetEligibleCoursesByRequirementId(r.requirement_id)).ToList();
         }
     }
 

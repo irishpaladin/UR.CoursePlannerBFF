@@ -126,6 +126,28 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
             return Ok(result);
         }
 
+        [HttpGet("CourseDetailsUser({userId})")]
+        public IActionResult GetCourseDetailsByUserId(int userId)
+        {
+            List<RequirementData> result;
+            try
+            {
+                if (userId <= 0)
+                {
+                    return BadRequest("Invalid userId");
+                }
+                else
+                {
+                    result = _getCourseDataByRequirementId.GetEligibleCoursesByUserId(userId);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok(result);
+        }
+
     }
 
 

@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.ComponentModel.DataAnnotations;
 using UR.CoursePlannerBFF.CourseManagerService;
+using UR.CoursePlannerBFF.CourseManagerService.CourseDetails;
 using UR.CoursePlannerBFF.CourseManagerService.Models;
 
 namespace UR.CoursePlannerBFF.CourseManager.Controllers
@@ -187,7 +188,7 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
             }
 
         }
-
+        
 
     }
 }
