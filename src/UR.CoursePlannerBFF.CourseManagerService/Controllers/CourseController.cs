@@ -20,9 +20,9 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
     public class CourseController : ControllerBase
     {
         private readonly ICourseManagerApiService _courseManagerService;
-        private readonly IGetCourseDataByRequirementId _getCourseDataByRequirementId;
+        private readonly IGetCourseDataByIds _getCourseDataByRequirementId;
 
-        public CourseController(ICourseManagerApiService courseManagerService, IGetCourseDataByRequirementId getCourseDataByRequirementId)
+        public CourseController(ICourseManagerApiService courseManagerService, IGetCourseDataByIds getCourseDataByRequirementId)
         {
             _getCourseDataByRequirementId= getCourseDataByRequirementId;
             _courseManagerService = courseManagerService;

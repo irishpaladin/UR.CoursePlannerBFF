@@ -3,18 +3,18 @@ using UR.CoursePlannerBFF.CourseManagerService.Utility;
 
 namespace UR.CoursePlannerBFF.CourseManagerService.CourseDetails
 {
-    public interface IGetCourseDataByRequirementId
+    public interface IGetCourseDataByIds
     {
         public RequirementData GetEligibleCoursesByRequirementId(int requirementId);
         public List<RequirementData> GetEligibleCoursesByUserId(int requirementId);
     }
 
-    public class GetCourseDataByRequirementId : IGetCourseDataByRequirementId
+    public class GetCourseDataByIds : IGetCourseDataByIds
     {
         private readonly ICourseManagerApiService _courseManagerApiService;
         private readonly IUserManagerApiService _userManagerApiService;
         private readonly IGetEligibleCoursesByRequirementType _eligibleCoursesByRequirementType;
-        public GetCourseDataByRequirementId(
+        public GetCourseDataByIds(
             ICourseManagerApiService courseManagerApiService,
             IGetEligibleCoursesByRequirementType getEligibleCoursesByRequirementType,
             IUserManagerApiService userManagerApiService)

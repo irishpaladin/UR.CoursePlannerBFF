@@ -27,7 +27,7 @@ namespace UR.CoursePlannerBFF.Configurations
             builder.Services.AddScoped<IGetEligibleCoursesByFacultyRequirement, GetEligibleCoursesByFacultyRequirement>();
             builder.Services.AddScoped<IGetEligibleCoursesBySubjectRequirements, GetEligibleCoursesBySubjectRequirements>();
             builder.Services.AddScoped<IGetEligibleCoursesByRequirementType, GetEligibleCoursesByRequirementType>();
-            builder.Services.AddScoped<IGetCourseDataByRequirementId, GetCourseDataByRequirementId>();
+            builder.Services.AddScoped<IGetCourseDataByIds, GetCourseDataByIds>();
 
 
         }
