@@ -129,5 +129,19 @@ namespace UR.CoursePlannerBFF.CourseManagerService
             else
                 return SaveUserCredentials(email, subclaim);
         }
+
+        public Requirement RequirementsDetailsByRequirementId(int requirementId)
+        {
+            const string sqlCommand = "[dbo].[GetRequirementsByRequirementsId]";
+            var sqlParameter = new
+            {
+                requirementId = requirementId
+            };
+            var result = _connection.GetConnection()
+                .Query<Requirement>(sqlCommand, sqlParameter, commandType: CommandType.StoredProcedure);
+
+            if (result == null) { throw new Exception($"Requirements with {requirementId} does not exist"); }
+            return result.FirstOrDefault();
+        }
     }
 }

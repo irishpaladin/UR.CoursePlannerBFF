@@ -1,5 +1,6 @@
 ﻿using UR.CoursePlannerBFF.Common.DBConnection;
 using UR.CoursePlannerBFF.CourseManagerService;
+using UR.CoursePlannerBFF.CourseManagerService.CourseDetails;
 using UR.CoursePlannerBFF.RequirementSchedule;
 
 
@@ -19,6 +20,15 @@ namespace UR.CoursePlannerBFF.Configurations
             builder.Services.AddScoped<IRequirementSchedulerApiService, RequirementSchedulerApiService>();
             builder.Services.AddScoped<IUserManagerApiService, UserManagerApiService>();
             builder.Services.AddScoped<IFacultyManagerApiService, FacultyManagerApiService>();
+
+            //
+            builder.Services.AddScoped<IGetEligibleCoursesByCourseAttributeRequirement, GetEligibleCoursesByCourseAttributeRequirement>();
+            builder.Services.AddScoped<IGetEligibleCoursesByCourseCatalogRequirement, GetEligibleCoursesByCourseCatalogRequirement>();
+            builder.Services.AddScoped<IGetEligibleCoursesByFacultyRequirement, GetEligibleCoursesByFacultyRequirement>();
+            builder.Services.AddScoped<IGetEligibleCoursesBySubjectRequirements, GetEligibleCoursesBySubjectRequirements>();
+            builder.Services.AddScoped<IGetEligibleCoursesByRequirementType, GetEligibleCoursesByRequirementType>();
+            builder.Services.AddScoped<IGetCourseDataByRequirementId, GetCourseDataByRequirementId>();
+
 
         }
     }

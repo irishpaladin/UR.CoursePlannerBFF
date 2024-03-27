@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using UR.CoursePlannerBFF.CourseManagerService;
+using UR.CoursePlannerBFF.CourseManagerService.CourseDetails;
 using UR.CoursePlannerBFF.CourseManagerService.Models;
 
 /*  example:
@@ -19,9 +20,11 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
     public class CourseController : ControllerBase
     {
         private readonly ICourseManagerApiService _courseManagerService;
+        private readonly IGetCourseDataByRequirementId _getCourseDataByRequirementId;
 
-        public CourseController(ICourseManagerApiService courseManagerService)
+        public CourseController(ICourseManagerApiService courseManagerService, IGetCourseDataByRequirementId getCourseDataByRequirementId)
         {
+            _getCourseDataByRequirementId= getCourseDataByRequirementId;
             _courseManagerService = courseManagerService;
         }
 
@@ -100,6 +103,29 @@ namespace UR.CoursePlannerBFF.CourseManager.Controllers
             }
             return Ok(result);
         }
+
+        [HttpGet("CourseDetailsRequirement({requirementId})")]
+        public IActionResult GetCourseDetailsByRequirementId(int requirementId)
+        {
+            RequirementData result;
+            try
+            {
+                if(requirementId==null || requirementId == 0)
+                {
+                    return BadRequest("Invalid requirementId");
+                }
+                else
+                {
+                    result = _getCourseDataByRequirementId.GetEligibleCoursesByRequirementId(requirementId);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+            return Ok(result);
+        }
+
     }
 
 
